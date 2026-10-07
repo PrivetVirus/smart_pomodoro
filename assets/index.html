@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Pomodoro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app" class="app-container">
+        
+        <!-- DASHBOARD TAB -->
+        <div id="tab-dashboard" class="tab-content active">
+            <header>
+                <h1>Баланс Игры</h1>
+                <div id="balance-display" class="balance neon-text">00:00:00</div>
+                <div id="debt-display" class="debt-text hidden">Долг: 00:00:00 развития</div>
+            </header>
+
+            <div class="planner-banner glass">
+                <div class="planner-header">
+                    <span class="planner-title">🗓 Умный План</span>
+                    <span class="planner-target" id="planner-target-time">до 19:00</span>
+                </div>
+                <div class="planner-text" id="planner-text">Считаю план...</div>
+            </div>
+
+            <main>
+                <div class="timers" id="tasks-container">
+                    <!-- Tasks will be rendered here dynamically -->
+                </div>
+                
+                <div class="progress-ring-container">
+                    <svg class="progress-ring" width="120" height="120">
+                        <circle class="progress-ring__circle" stroke="rgba(0, 255, 204, 0.2)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+                        <circle class="progress-ring__fill" id="progress-ring" stroke="#00ffcc" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+                    </svg>
+                    <div class="status-text" id="status-text">Ожидание</div>
+                </div>
+            </main>
+        </div>
+
+        <!-- JOURNAL TAB -->
+        <div id="tab-journal" class="tab-content">
+            <header>
+                <h1>Журнал Действий</h1>
+            </header>
+            <main>
+                <div class="journal-list glass" id="journal-list">
+                    <!-- Journal entries go here -->
+                </div>
+            </main>
+        </div>
+
+        <!-- SETTINGS TAB -->
+        <div id="tab-settings" class="tab-content">
+            <header>
+                <h1>Настройки</h1>
+            </header>
+            <main>
+                <div class="settings-panel glass">
+                    <h2>Общие</h2>
+                    <div class="form-group">
+                        <label>Время спортзала (ЧЧ:ММ)</label>
+                        <input type="time" id="gym-time-input" value="15:00">
+                    </div>
+                    <div class="form-group">
+                        <label>Цель Планировщика (ЧЧ:ММ)</label>
+                        <input type="time" id="planner-time-input" value="19:00">
+                    </div>
+                    
+                    <h2 style="margin-top:20px;">Мои Занятия</h2>
+                    <div class="tasks-list" id="settings-tasks-list">
+                        <!-- Tasks list -->
+                    </div>
+                    
+                    <div class="add-task-form">
+                        <input type="text" id="new-task-name" placeholder="Название (напр. Кодинг)">
+                        <input type="number" id="new-task-ratio" placeholder="Коэф. (напр. 1.5)" step="0.1" min="0.1">
+                        <select id="new-task-type">
+                            <option value="productive">Развитие</option>
+                            <option value="reward">Награда (Игры)</option>
+                        </select>
+                        <button class="btn btn-small" onclick="addTask()">Добавить</button>
+                    </div>
+
+                    <div class="modal-actions" style="margin-top: 30px;">
+                        <button class="btn" onclick="saveSettings()">Сохранить</button>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- BOTTOM NAV -->
+        <nav class="bottom-nav glass">
+            <button class="nav-btn active" id="nav-dashboard" onclick="switchTab('dashboard')">🏠 Главная</button>
+            <button class="nav-btn" id="nav-journal" onclick="switchTab('journal')">📖 Журнал</button>
+            <button class="nav-btn" id="nav-settings" onclick="switchTab('settings')">⚙️ Настройки</button>
+        </nav>
+    </div>
+
+    <!-- Alert Overlay -->
+    <div id="alert-overlay" class="overlay hidden">
+        <div class="modal glass">
+            <h1 class="neon-text-red" id="alert-title">⚠️ ВНИМАНИЕ</h1>
+            <p id="alert-text">Действие заблокировано.</p>
+            <button class="btn btn-red" style="margin-top:20px;" onclick="document.getElementById('alert-overlay').classList.add('hidden')">Понятно</button>
+        </div>
+    </div>
+
+    <!-- Gym Overlay -->
+    <div id="gym-overlay" class="overlay hidden">
+        <div class="modal glass">
+            <h1 class="neon-text-red">🏋️ Время в спортзал!</h1>
+            <p>Тренировка на 2 часа. Все активности заблокированы.</p>
+            <p id="gym-cooldown" class="cooldown-text">02:00:00</p>
+            <button class="btn btn-red" id="confirm-gym-btn" onclick="confirmGym()">Я иду на тренировку</button>
+        </div>
+    </div>
+
+    <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
